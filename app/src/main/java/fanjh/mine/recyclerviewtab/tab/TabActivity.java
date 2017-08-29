@@ -26,7 +26,7 @@ public class TabActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
-        mTabAdapter = new TabAdapter(this);
+        mTabAdapter = new TabAdapter(this,getResources().getDisplayMetrics().widthPixels);
         final List<TabEntity> tabEntityList = new ArrayList<>();
         tabEntityList.add(new TabEntity("首页",R.mipmap.ic_launcher,R.mipmap.ic_launcher_round));
         tabEntityList.add(new TabEntity("发现",R.mipmap.ic_launcher,R.mipmap.ic_launcher_round));

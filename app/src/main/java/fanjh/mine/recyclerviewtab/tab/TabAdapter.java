@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import fanjh.mine.library.BaseEqualSplitAdapter;
 import fanjh.mine.library.BaseRecyclerTabAdapter;
 import fanjh.mine.recyclerviewtab.R;
 
@@ -14,9 +15,10 @@ import fanjh.mine.recyclerviewtab.R;
  * Created by faker on 2017/8/29.
  */
 
-public class TabAdapter extends BaseRecyclerTabAdapter<TabEntity> {
-    public TabAdapter(Context mContext) {
-        super(mContext);
+public class TabAdapter extends BaseEqualSplitAdapter<TabEntity> {
+
+    public TabAdapter(Context mContext, int mSumWidth) {
+        super(mContext, mSumWidth);
     }
 
     @Override
@@ -30,11 +32,8 @@ public class TabAdapter extends BaseRecyclerTabAdapter<TabEntity> {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater(R.layout.item_tab,parent);
-        int width = getContext().getResources().getDisplayMetrics().widthPixels;
-        view.setLayoutParams(new RecyclerView.LayoutParams(width / getItemCount(), ViewGroup.LayoutParams.WRAP_CONTENT));
-        return new TabHolder(view);
+    public RecyclerView.ViewHolder createHolder(ViewGroup parent, int viewType) {
+        return new TabHolder(inflater(R.layout.item_tab,parent));
     }
 
     class TabHolder extends RecyclerView.ViewHolder{
