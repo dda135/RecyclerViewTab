@@ -5,13 +5,12 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 /**
 * @author fanjh
 * @date 2017/8/29 9:26
-* @description Tab的装饰
+* @description Tab的底部横线型装饰
 **/
 public class TabItemDecoration extends BaseTabDecoration {
     private Context mContext;

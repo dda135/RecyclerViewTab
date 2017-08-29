@@ -26,6 +26,7 @@ public class TabRecyclerView extends RecyclerView {
     private LinearSmoothScroller mLinearSmoothScroller;
     private DefaultItemAnimator mItemAnimator;
     private int mPagerScrollState;
+    private boolean clickShouldSmooth;
 
     public TabRecyclerView(Context context) {
         this(context,null);
@@ -77,6 +78,10 @@ public class TabRecyclerView extends RecyclerView {
         throw new IllegalArgumentException("当前只能使用继承于BaseTabDecoration的装饰");
     }
 
+    public void clickShouldSmooth(boolean clickShouldSmooth) {
+        this.clickShouldSmooth = clickShouldSmooth;
+    }
+
     @Override
     public void setAdapter(Adapter adapter) {
         if(adapter instanceof BaseRecyclerTabAdapter) {
@@ -86,7 +91,7 @@ public class TabRecyclerView extends RecyclerView {
                 public void onSelected(int oldSelectedIndex,int position) {
                     setSelectIndex(position,0);
                     if(null != mAssociatePager){
-                        mAssociatePager.setCurrentItem(position);
+                        mAssociatePager.setCurrentItem(position,clickShouldSmooth);
                     }
                 }
             });
@@ -135,12 +140,12 @@ public class TabRecyclerView extends RecyclerView {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(ViewPager.SCROLL_STATE_IDLE == mPagerScrollState) {
+                if (ViewPager.SCROLL_STATE_IDLE == mPagerScrollState) {
                     mLinearSmoothScroller.setTargetPosition(mSelectedIndex);
                     mDefaultLayoutManager.startSmoothScroll(mLinearSmoothScroller);
                 }
             }
-        },300);
+        }, 300);
     }
 
 }

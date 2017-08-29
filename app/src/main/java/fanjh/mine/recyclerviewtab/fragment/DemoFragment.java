@@ -1,6 +1,7 @@
-package fanjh.mine.recyclerviewtab;
+package fanjh.mine.recyclerviewtab.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.TextView;
+
+import fanjh.mine.recyclerviewtab.tab.TabActivity;
 
 /**
  * Created by faker on 2017/8/29.
@@ -44,6 +47,13 @@ public class DemoFragment extends Fragment {
             mView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             mView.setTextSize(24);
             mView.setText(mShowText);
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), TabActivity.class);
+                    startActivity(intent);
+                }
+            });
         }
         return mView;
     }

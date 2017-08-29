@@ -1,4 +1,4 @@
-package fanjh.mine.recyclerviewtab;
+package fanjh.mine.recyclerviewtab.indicator;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import fanjh.mine.library.BaseRecyclerTabAdapter;
+import fanjh.mine.recyclerviewtab.R;
 
 /**
  * Created by faker on 2017/8/29.

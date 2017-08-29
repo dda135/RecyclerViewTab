@@ -1,4 +1,4 @@
-package fanjh.mine.recyclerviewtab;
+package fanjh.mine.recyclerviewtab.indicator;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -14,6 +14,8 @@ import java.util.List;
 
 import fanjh.mine.library.TabItemDecoration;
 import fanjh.mine.library.TabRecyclerView;
+import fanjh.mine.recyclerviewtab.fragment.DemoFragment;
+import fanjh.mine.recyclerviewtab.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDecoration(){
         mTabDecoration = new TabItemDecoration(this);
-        mTabDecoration.setFixedWidth(false);
+        mTabDecoration.setFixedWidth(true);
         mLineHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,4,getResources().getDisplayMetrics());
         mTabDecoration.setLineHeight(mLineHeight);
         mTabDecoration.setLineWidth(mLineHeight);
