@@ -31,7 +31,7 @@ public class TabAdapter extends BaseEqualSplitAdapter<TabEntity> {
     }
 
     @Override
-    public RecyclerView.ViewHolder createHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new TabHolder(inflater(R.layout.item_tab,parent));
     }
 

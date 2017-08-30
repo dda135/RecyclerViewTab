@@ -10,6 +10,9 @@ import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author fanjh
  * @date 2017/8/29 10:19
@@ -22,7 +25,7 @@ public class TabRecyclerView extends RecyclerView {
     public static final int DEFAULT_ANIMATE_TIME = 150;
     public static final int DEFAULT_AUTO_SCROLL_TIME = 50;
     private LinearLayoutManager mDefaultLayoutManager;
-    private BaseTabDecoration mTabDecoration;
+    private List<BaseTabDecoration> mTabDecorations;
     private BaseRecyclerTabAdapter<?> mTabAdapter;
     private ViewPager mAssociatePager;
     private int mSelectedIndex;
@@ -112,11 +115,22 @@ public class TabRecyclerView extends RecyclerView {
     @Override
     public void addItemDecoration(ItemDecoration decor) {
         if (decor instanceof BaseTabDecoration) {
-            mTabDecoration = (BaseTabDecoration) decor;
-            super.addItemDecoration(mTabDecoration);
+            if(null == mTabDecorations){
+                mTabDecorations = new ArrayList<>();
+            }
+            mTabDecorations.add((BaseTabDecoration) decor);
+            super.addItemDecoration(decor);
             return;
         }
         throw new IllegalArgumentException("当前只能使用继承于BaseTabDecoration的装饰");
+    }
+
+    @Override
+    public void removeItemDecoration(ItemDecoration decor) {
+        if(null != mTabDecorations){
+            mTabDecorations.remove(decor);
+        }
+        super.removeItemDecoration(decor);
     }
 
     public void clickShouldSmooth(boolean clickShouldSmooth) {
@@ -184,8 +198,10 @@ public class TabRecyclerView extends RecyclerView {
     }
 
     public void setSelectIndex(int newIndex, float nextOffset) {
-        if (null != mTabDecoration) {
-            mTabDecoration.setSelectIndex(newIndex, nextOffset);
+        if (null != mTabDecorations) {
+            for(BaseTabDecoration decoration:mTabDecorations){
+                decoration.setSelectIndex(newIndex,nextOffset);
+            }
         }
         if (null != mTabAdapter) {
             mTabAdapter.setSelectedIndex(newIndex, nextOffset);

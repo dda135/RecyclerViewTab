@@ -12,7 +12,7 @@ import android.view.View;
 * @date 2017/8/29 9:26
 * @description Tab的底部横线型装饰
 **/
-public class TabItemDecoration extends BaseTabDecoration {
+public class TabItemIndicatorDecoration extends BaseTabDecoration {
     private Context mContext;
     private boolean isFixedWidth;
     private int mLineHeight;
@@ -23,7 +23,7 @@ public class TabItemDecoration extends BaseTabDecoration {
     private OnScrollSelectedCallback mDefaultScrollCallback;
     private Rect mLineBound;
 
-    public TabItemDecoration(Context mContext) {
+    public TabItemIndicatorDecoration(Context mContext) {
         this.mContext = mContext;
         mLineColor = mContext.getResources().getColor(android.R.color.holo_green_dark);
         mLineBackgroundColor = mContext.getResources().getColor(android.R.color.darker_gray);
@@ -44,7 +44,7 @@ public class TabItemDecoration extends BaseTabDecoration {
                     left = (int) (child.getLeft() + ((child.getWidth() - mLineWidth) >> 1) +
                             offset * ((child.getWidth() + nextDistance) >> 1));
                 }
-                mLineBound.set(left,bottom - mLineHeight,left + mLineWidth,bottom);
+                mLineBound.set(left,bottom,left + mLineWidth,bottom + mLineHeight);
                 mPaint.setColor(mLineColor);
                 c.drawRect(mLineBound.left, mLineBound.top, mLineBound.right, mLineBound.bottom,mPaint);
             }
@@ -78,5 +78,10 @@ public class TabItemDecoration extends BaseTabDecoration {
         mPaint.setColor(mLineBackgroundColor);
         c.drawRect(mLineBound.left, mLineBound.top, mLineBound.right, mLineBound.bottom,mPaint);
         super.onDraw(c, parent, state);
+    }
+
+    @Override
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        outRect.set(0,0,0,mLineHeight);
     }
 }

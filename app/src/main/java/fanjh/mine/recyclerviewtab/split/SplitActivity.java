@@ -1,10 +1,10 @@
-package fanjh.mine.recyclerviewtab.indicator;
+package fanjh.mine.recyclerviewtab.split;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -13,21 +13,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fanjh.mine.library.TabItemIndicatorDecoration;
+import fanjh.mine.library.TabItemSplitDecoration;
 import fanjh.mine.library.TabRecyclerView;
-import fanjh.mine.recyclerviewtab.fragment.DemoFragment;
 import fanjh.mine.recyclerviewtab.R;
+import fanjh.mine.recyclerviewtab.fragment.DemoFragment;
+import fanjh.mine.recyclerviewtab.indicator.TextTabAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class SplitActivity extends AppCompatActivity {
 
     private ViewPager mContentPager;
 
     private TabRecyclerView mRecyclerView;
     private TextTabAdapter mTabAdapter;
-    private TabItemIndicatorDecoration mTabDecoration;
+    private TabItemSplitDecoration mTabSplitDecoration;
+    private TabItemIndicatorDecoration mTabIndicatorDecoration;
 
     private Button mChangeTabButton;
-
-    private int mLineHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,21 +66,33 @@ public class MainActivity extends AppCompatActivity {
         });
         mRecyclerView = (TabRecyclerView) findViewById(R.id.rv_tab);
 
+        initIndicatorDecoration();
         initDecoration();
         initAdapter();
         mRecyclerView.setViewPager(mContentPager);
 
-        mRecyclerView.addItemDecoration(mTabDecoration);
+        mRecyclerView.addItemDecoration(mTabIndicatorDecoration);
+        mRecyclerView.addItemDecoration(mTabSplitDecoration);
         mRecyclerView.setAdapter(mTabAdapter);
 
     }
 
     private void initDecoration(){
-        mTabDecoration = new TabItemIndicatorDecoration(this);
-        mTabDecoration.setFixedWidth(true);
-        mLineHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,4,getResources().getDisplayMetrics());
-        mTabDecoration.setLineHeight(mLineHeight);
-        mTabDecoration.setLineWidth(mLineHeight);
+        mTabSplitDecoration = new TabItemSplitDecoration(this);
+        int mLineHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,8,getResources().getDisplayMetrics());
+        int mLineWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,2,getResources().getDisplayMetrics());
+        //mTabDecoration.setLineHeight(mLineHeight);
+        mTabSplitDecoration.setLineColor(getResources().getColor(android.R.color.holo_green_dark));
+        mTabSplitDecoration.setRatio(0.6f);
+        mTabSplitDecoration.setLineWidth(mLineWidth);
+    }
+
+    private void initIndicatorDecoration(){
+        mTabIndicatorDecoration = new TabItemIndicatorDecoration(this);
+        mTabIndicatorDecoration.setFixedWidth(true);
+        int mLineHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,4,getResources().getDisplayMetrics());
+        mTabIndicatorDecoration.setLineHeight(mLineHeight);
+        mTabIndicatorDecoration.setLineWidth(mLineHeight);
     }
 
     private void initAdapter(){

@@ -14,18 +14,14 @@ import fanjh.mine.recyclerviewtab.R;
  */
 
 public class TextTabAdapter extends BaseRecyclerTabAdapter<String> {
-    private int mLineHeight;
 
-    public TextTabAdapter(Context mContext, int mLineHeight) {
+    public TextTabAdapter(Context mContext) {
         super(mContext);
-        this.mLineHeight = mLineHeight;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater(R.layout.item_tab_text,parent);
-        view.setPadding(view.getPaddingLeft(),view.getPaddingTop(),view.getPaddingRight(),view.getPaddingBottom() + mLineHeight);
-        return new TextViewHolder(view);
+        return new TextViewHolder(inflater(R.layout.item_tab_text,parent));
     }
 
     @Override

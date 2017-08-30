@@ -14,6 +14,13 @@
         />
 
     <Button
+        android:id="@+id/btn_to_split"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="top_split_mode"
+        />
+
+    <Button
         android:id="@+id/btn_to_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

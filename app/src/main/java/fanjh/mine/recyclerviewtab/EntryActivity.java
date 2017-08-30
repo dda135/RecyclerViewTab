@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import fanjh.mine.recyclerviewtab.indicator.MainActivity;
+import fanjh.mine.recyclerviewtab.split.SplitActivity;
 import fanjh.mine.recyclerviewtab.tab.TabActivity;
 
 /**
@@ -20,11 +21,19 @@ public class EntryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
         Button indicator = (Button) findViewById(R.id.btn_to_indicator);
+        Button split = (Button) findViewById(R.id.btn_to_split);
         Button tab = (Button) findViewById(R.id.btn_to_tab);
-        indicator.setOnClickListener(new View.OnClickListener() {
+                indicator.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                Intent intent = new Intent(EntryActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+        split.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EntryActivity.this, MainActivity.class);
+                Intent intent = new Intent(EntryActivity.this, SplitActivity.class);
                 startActivity(intent);
             }
         });

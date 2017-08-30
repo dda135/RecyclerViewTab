@@ -2,7 +2,6 @@ package fanjh.mine.library;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 /**
@@ -27,12 +26,6 @@ public abstract class BaseEqualSplitAdapter<T> extends BaseRecyclerTabAdapter<T>
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder = createHolder(parent,viewType);
-        return holder;
-    }
-
-    @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
@@ -41,7 +34,5 @@ public abstract class BaseEqualSplitAdapter<T> extends BaseRecyclerTabAdapter<T>
             holder.itemView.requestLayout();
         }
     }
-
-    public abstract RecyclerView.ViewHolder createHolder(ViewGroup parent, int viewType);
 
 }

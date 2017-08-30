@@ -20,6 +20,8 @@
         </activity>
         <activity android:name=".tab.TabActivity">
         </activity>
+        <activity android:name=".split.SplitActivity">
+        </activity>
     </application>
 
 </manifest>
