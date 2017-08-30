@@ -26,15 +26,17 @@ public class TabActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
-        mTabAdapter = new TabAdapter(this,getResources().getDisplayMetrics().widthPixels);
+        mContentPager = (ViewPager) findViewById(R.id.vp_content);
+        mTabView = (TabRecyclerView) findViewById(R.id.trv_tab);
+
+        mTabAdapter = new TabAdapter(this,mTabView);
         final List<TabEntity> tabEntityList = new ArrayList<>();
         tabEntityList.add(new TabEntity("首页",R.mipmap.ic_launcher,R.mipmap.ic_launcher_round));
         tabEntityList.add(new TabEntity("发现",R.mipmap.ic_launcher,R.mipmap.ic_launcher_round));
         tabEntityList.add(new TabEntity("消息",R.mipmap.ic_launcher,R.mipmap.ic_launcher_round));
         tabEntityList.add(new TabEntity("我的",R.mipmap.ic_launcher,R.mipmap.ic_launcher_round));
         mTabAdapter.addCollections(tabEntityList);
-        mContentPager = (ViewPager) findViewById(R.id.vp_content);
-        mTabView = (TabRecyclerView) findViewById(R.id.trv_tab);
+
         mTabView.setViewPager(mContentPager);
         mTabView.clickShouldSmooth(false);
 

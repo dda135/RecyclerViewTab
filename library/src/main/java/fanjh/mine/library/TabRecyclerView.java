@@ -1,6 +1,7 @@
 package fanjh.mine.library;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -27,7 +28,6 @@ public class TabRecyclerView extends RecyclerView {
     private int mSelectedIndex;
     private LinearSmoothScroller mLinearSmoothScroller;
     private DefaultItemAnimator mItemAnimator;
-    private int mPagerScrollState;
     private boolean clickShouldSmooth;
 
     public TabRecyclerView(Context context) {
@@ -47,6 +47,7 @@ public class TabRecyclerView extends RecyclerView {
 
     private void initSmoothScroller() {
         mLinearSmoothScroller = new LinearSmoothScroller(getContext()) {
+
             @Override
             public int calculateDtToFit(int viewStart, int viewEnd, int boxStart, int boxEnd, int snapPreference) {
                 return (boxStart + ((boxEnd - boxStart) >> 1)) - (viewStart + ((viewEnd - viewStart) >> 1));
@@ -60,7 +61,37 @@ public class TabRecyclerView extends RecyclerView {
     }
 
     private void initAnimator() {
-        mItemAnimator = new DefaultItemAnimator();
+        mItemAnimator = new DefaultItemAnimator(){
+            @Override
+            public boolean animateMove(ViewHolder holder, int fromX, int fromY, int toX, int toY) {
+                return true;
+            }
+
+            @Override
+            public boolean animateAdd(ViewHolder holder) {
+                return true;
+            }
+
+            @Override
+            public boolean animateRemove(ViewHolder holder) {
+                return true;
+            }
+
+            @Override
+            public boolean animateAppearance(@NonNull ViewHolder viewHolder, @Nullable ItemHolderInfo preLayoutInfo, @NonNull ItemHolderInfo postLayoutInfo) {
+                return true;
+            }
+
+            @Override
+            public boolean animateDisappearance(@NonNull ViewHolder viewHolder, @NonNull ItemHolderInfo preLayoutInfo, @Nullable ItemHolderInfo postLayoutInfo) {
+                return true;
+            }
+
+            @Override
+            public boolean animatePersistence(@NonNull ViewHolder viewHolder, @NonNull ItemHolderInfo preInfo, @NonNull ItemHolderInfo postInfo) {
+                return true;
+            }
+        };
         mItemAnimator.setAddDuration(DEFAULT_ANIMATE_TIME);
         mItemAnimator.setChangeDuration(DEFAULT_ANIMATE_TIME);
         mItemAnimator.setMoveDuration(DEFAULT_ANIMATE_TIME);
@@ -129,8 +160,7 @@ public class TabRecyclerView extends RecyclerView {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                mPagerScrollState = state;
-                if (ViewPager.SCROLL_STATE_IDLE == mPagerScrollState) {
+                if(state == RecyclerView.SCROLL_STATE_IDLE) {
                     autoScroll();
                 }
             }
@@ -138,8 +168,19 @@ public class TabRecyclerView extends RecyclerView {
     }
 
     private void autoScroll(){
-        mLinearSmoothScroller.setTargetPosition(mSelectedIndex);
-        mDefaultLayoutManager.startSmoothScroll(mLinearSmoothScroller);
+        if(null == mDefaultLayoutManager.findViewByPosition(mSelectedIndex)){
+            scrollToPosition(mSelectedIndex);
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mLinearSmoothScroller.setTargetPosition(mSelectedIndex);
+                    mDefaultLayoutManager.startSmoothScroll(mLinearSmoothScroller);
+                }
+            },100);
+        }else {
+            mLinearSmoothScroller.setTargetPosition(mSelectedIndex);
+            mDefaultLayoutManager.startSmoothScroll(mLinearSmoothScroller);
+        }
     }
 
     public void setSelectIndex(int newIndex, float nextOffset) {

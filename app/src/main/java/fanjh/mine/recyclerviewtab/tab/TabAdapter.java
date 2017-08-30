@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import fanjh.mine.library.BaseEqualSplitAdapter;
-import fanjh.mine.library.BaseRecyclerTabAdapter;
 import fanjh.mine.recyclerviewtab.R;
 
 /**
@@ -17,8 +16,8 @@ import fanjh.mine.recyclerviewtab.R;
 
 public class TabAdapter extends BaseEqualSplitAdapter<TabEntity> {
 
-    public TabAdapter(Context mContext, int mSumWidth) {
-        super(mContext, mSumWidth);
+    public TabAdapter(Context mContext, RecyclerView recyclerView) {
+        super(mContext, recyclerView);
     }
 
     @Override
