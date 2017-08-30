@@ -32,6 +32,7 @@ public class TabRecyclerView extends RecyclerView {
     private LinearSmoothScroller mLinearSmoothScroller;
     private DefaultItemAnimator mItemAnimator;
     private boolean clickShouldSmooth;
+    private boolean shouldAutoMiddle = true;//default scroll to middle
 
     public TabRecyclerView(Context context) {
         this(context, null);
@@ -46,6 +47,10 @@ public class TabRecyclerView extends RecyclerView {
         setDefaultLayoutManager();
         initSmoothScroller();
         initAnimator();
+    }
+
+    public void shouldAutoMiddle(boolean shouldAutoMiddle) {
+        this.shouldAutoMiddle = shouldAutoMiddle;
     }
 
     private void initSmoothScroller() {
@@ -182,6 +187,9 @@ public class TabRecyclerView extends RecyclerView {
     }
 
     private void autoScroll(){
+        if(!shouldAutoMiddle){
+            return;
+        }
         if(null == mDefaultLayoutManager.findViewByPosition(mSelectedIndex)){
             scrollToPosition(mSelectedIndex);
             postDelayed(new Runnable() {

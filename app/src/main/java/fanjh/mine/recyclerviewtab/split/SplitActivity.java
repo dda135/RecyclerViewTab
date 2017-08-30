@@ -74,6 +74,7 @@ public class SplitActivity extends AppCompatActivity {
         mRecyclerView.addItemDecoration(mTabIndicatorDecoration);
         mRecyclerView.addItemDecoration(mTabSplitDecoration);
         mRecyclerView.setAdapter(mTabAdapter);
+        //mRecyclerView.shouldAutoMiddle(false);
 
     }
 
@@ -82,15 +83,16 @@ public class SplitActivity extends AppCompatActivity {
         int mLineHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,8,getResources().getDisplayMetrics());
         int mLineWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,2,getResources().getDisplayMetrics());
         //mTabDecoration.setLineHeight(mLineHeight);
-        mTabSplitDecoration.setLineColor(getResources().getColor(android.R.color.holo_green_dark));
-        mTabSplitDecoration.setRatio(0.6f);
+        mTabSplitDecoration.setLineColor(getResources().getColor(android.R.color.darker_gray));
+        mTabSplitDecoration.setRatio(0.4f);
         mTabSplitDecoration.setLineWidth(mLineWidth);
     }
 
     private void initIndicatorDecoration(){
         mTabIndicatorDecoration = new TabItemIndicatorDecoration(this);
         mTabIndicatorDecoration.setFixedWidth(true);
-        int mLineHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,4,getResources().getDisplayMetrics());
+        int mLineHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,2,getResources().getDisplayMetrics());
+        mTabIndicatorDecoration.setLineBackgroundColor(getResources().getColor(android.R.color.transparent));
         mTabIndicatorDecoration.setLineHeight(mLineHeight);
         mTabIndicatorDecoration.setLineWidth(mLineHeight);
     }

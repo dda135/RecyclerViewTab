@@ -58,6 +58,7 @@ public class TabItemSplitDecoration extends BaseTabDecoration {
                 mLineHeight = (int) (child.getHeight() * mRatio);
             }
             int top = ((child.getHeight() - mLineHeight) >> 1);
+            mPaint.setColor(mLineColor);
             c.drawRect(child.getRight(),top,child.getRight() + mLineWidth,top + mLineHeight,mPaint);
         }
     }
