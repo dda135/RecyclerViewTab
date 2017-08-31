@@ -61,7 +61,7 @@ public class SplitActivity extends AppCompatActivity {
                         return randomCount;
                     }
                 });
-                mRecyclerView.setSelectIndex(0,0,true);
+                mRecyclerView.setSelectIndex(0,0);
             }
         });
         mRecyclerView = (TabRecyclerView) findViewById(R.id.rv_tab);
@@ -73,6 +73,7 @@ public class SplitActivity extends AppCompatActivity {
 
         mRecyclerView.addItemDecoration(mTabIndicatorDecoration);
         mRecyclerView.addItemDecoration(mTabSplitDecoration);
+        mRecyclerView.shouldSensitive(false);
         mRecyclerView.setAdapter(mTabAdapter);
         //mRecyclerView.shouldAutoMiddle(false);
 

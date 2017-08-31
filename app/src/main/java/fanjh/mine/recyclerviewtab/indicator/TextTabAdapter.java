@@ -26,7 +26,7 @@ public class TextTabAdapter extends BaseRecyclerTabAdapter<String> {
     }
 
     @Override
-    public void bindDataToView(boolean isSelected,float nextOffset,RecyclerView.ViewHolder holder, final int position) {
+    public void bindDataToView(boolean isSelected,int pagerIndex,float nextOffset,RecyclerView.ViewHolder holder, final int position) {
         TextViewHolder textViewHolder = (TextViewHolder) holder;
         textViewHolder.mTabText.setTextColor(isSelected?getContext().getResources().getColor(android.R.color.holo_green_dark):
         getContext().getResources().getColor(android.R.color.black));

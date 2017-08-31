@@ -21,7 +21,7 @@ public class TabAdapter extends BaseEqualSplitAdapter<TabEntity> {
     }
 
     @Override
-    public void bindDataToView(boolean isSelected, float nextOffset, RecyclerView.ViewHolder holder, int position) {
+    public void bindDataToView(boolean isSelected,int pagerIndex, float nextOffset, RecyclerView.ViewHolder holder, int position) {
         TabHolder tabHolder = (TabHolder) holder;
         TabEntity tabEntity = getItem(position);
         tabHolder.mTabTextView.setTextColor(isSelected?getContext().getResources().getColor(android.R.color.holo_green_dark):

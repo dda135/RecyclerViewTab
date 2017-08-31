@@ -21,6 +21,7 @@ public abstract class BaseRecyclerTabAdapter<T> extends RecyclerView.Adapter{
     private LayoutInflater mInflater;
     private List<OnSelectedCallback> mCallbacks;
     private List<View.OnClickListener> mTabClickListeners;
+    private int mPagerIndex;
     private int mSelectedIndex;
     private float mNextOffset;
 
@@ -41,8 +42,12 @@ public abstract class BaseRecyclerTabAdapter<T> extends RecyclerView.Adapter{
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    void setSelectedIndex(int mSelectedIndex,float nextOffset){
+    void setSelectedIndex(int mSelectedIndex){
         this.mSelectedIndex = mSelectedIndex;
+    }
+
+    void setPagerIndex(int pagerIndex,float nextOffset){
+        mPagerIndex = pagerIndex;
         mNextOffset = nextOffset;
     }
 
@@ -109,10 +114,10 @@ public abstract class BaseRecyclerTabAdapter<T> extends RecyclerView.Adapter{
                 }
             }
         });
-        bindDataToView(mSelectedIndex == position,mNextOffset,holder,position);
+        bindDataToView(mSelectedIndex == position,mPagerIndex,mNextOffset,holder,position);
     }
 
-    public abstract void bindDataToView(boolean isSelected,float nextOffset,RecyclerView.ViewHolder holder, final int position);
+    public abstract void bindDataToView(boolean isSelected,int pagerIndex,float nextOffset,RecyclerView.ViewHolder holder, final int position);
 
     public void updateCollections(List<T> newCollections){
         if(null == newCollections){

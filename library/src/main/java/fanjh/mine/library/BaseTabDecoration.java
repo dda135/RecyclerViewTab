@@ -11,7 +11,7 @@ import android.view.View;
 * @note
 **/
 public abstract class BaseTabDecoration extends RecyclerView.ItemDecoration{
-    private int mSelectedIndex;
+    private int mPagerIndex;
     private float mNextOffset;
     private OnScrollSelectedCallback mScrollSelectedCallback;
 
@@ -23,8 +23,8 @@ public abstract class BaseTabDecoration extends RecyclerView.ItemDecoration{
         void onScrollSelected(Canvas c,View child,int nextDistance,float offset);
     }
 
-    void setSelectIndex(int selectIndex,float nextOffset){
-        mSelectedIndex = selectIndex;
+    void setPagerOffsetIndex(int pagerIndex,float nextOffset){
+        mPagerIndex = pagerIndex;
         mNextOffset = nextOffset;
     }
 
@@ -34,10 +34,10 @@ public abstract class BaseTabDecoration extends RecyclerView.ItemDecoration{
         for(int i = 0;i < parent.getChildCount();++i){
             View child = parent.getChildAt(i);
             int viewPosition = parent.getChildAdapterPosition(child);
-            boolean isAnchorSelectedItem = viewPosition == mSelectedIndex;
+            boolean isAnchorSelectedItem = viewPosition == mPagerIndex;
             if(null != mScrollSelectedCallback){
                 if(isAnchorSelectedItem){
-                    RecyclerView.ViewHolder holder = parent.findViewHolderForAdapterPosition(mSelectedIndex + 1);
+                    RecyclerView.ViewHolder holder = parent.findViewHolderForAdapterPosition(mPagerIndex + 1);
                     int nextDistance = 0;
                     if(null != holder) {
                         View nextChild = holder.itemView;

@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,7 @@ import java.util.List;
  * 内部统一管理选中item
  **/
 public class TabRecyclerView extends RecyclerView {
+    public static final float DEFAULT_SELECTED_OFFSET = 0.5f;
     public static final int DEFAULT_ANIMATE_TIME = 150;
     public static final int DEFAULT_AUTO_SCROLL_TIME = 50;
     private LinearLayoutManager mDefaultLayoutManager;
@@ -35,9 +35,7 @@ public class TabRecyclerView extends RecyclerView {
     private DefaultItemAnimator mItemAnimator;
     private boolean clickShouldSmooth;
     private boolean shouldAutoMiddle = true;//default scroll to middle
-    private float lastPositionOffset;
-    private boolean leftToright = false;
-    private boolean changeColor = false;
+    private boolean shouldSensitive = true;//default use 0.5 offset
 
     public TabRecyclerView(Context context) {
         this(context, null);
@@ -52,6 +50,10 @@ public class TabRecyclerView extends RecyclerView {
         setDefaultLayoutManager();
         initSmoothScroller();
         initAnimator();
+    }
+
+    public void shouldSensitive(boolean shouldSensitive) {
+        this.shouldSensitive = shouldSensitive;
     }
 
     public void shouldAutoMiddle(boolean shouldAutoMiddle) {
@@ -153,7 +155,7 @@ public class TabRecyclerView extends RecyclerView {
             mTabAdapter.addCallback(new BaseRecyclerTabAdapter.OnSelectedCallback() {
                 @Override
                 public void onSelected(int oldSelectedIndex, int position) {
-                    setSelectIndex(position, 0, true);
+                    setSelectIndex(position, 0);
                     if (null != mAssociatePager) {
                         mAssociatePager.setCurrentItem(position, clickShouldSmooth);
                     }
@@ -174,9 +176,7 @@ public class TabRecyclerView extends RecyclerView {
         this.mAssociatePager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                setOffset(positionOffset);
-                setSelectIndex(position, positionOffset, false);
-                lastPositionOffset = positionOffset;
+                setSelectIndex(position, positionOffset);
             }
 
             @Override
@@ -213,43 +213,43 @@ public class TabRecyclerView extends RecyclerView {
 
     /**
      * 选中某一项
+     *
      * @param newIndex
      * @param nextOffset
-     * @param withOutOffset 是否考虑viewpager滑动的时候，这个时候判断offset值为0.5的情况
      */
-    public void setSelectIndex(int newIndex, float nextOffset, boolean withOutOffset) {
+    public void setSelectIndex(int newIndex, float nextOffset) {
         if (null != mTabDecorations) {
             for (BaseTabDecoration decoration : mTabDecorations) {
-                decoration.setSelectIndex(newIndex, nextOffset);
+                decoration.setPagerOffsetIndex(newIndex,nextOffset);
             }
         }
 
-        if (withOutOffset) {
-            mTabAdapter.setSelectedIndex(newIndex, nextOffset);
+        int realSelectedIndex = newIndex;
+        if(shouldSensitive) {
+            if (nextOffset >= DEFAULT_SELECTED_OFFSET) {
+                realSelectedIndex = newIndex + 1;
+            }
+        }else{
+            if(nextOffset != 0){
+                realSelectedIndex = mSelectedIndex;
+            }
+            if(mSelectedIndex - newIndex > 1){
+                realSelectedIndex = newIndex + 1;
+            }else if(newIndex - mSelectedIndex == 1 && nextOffset > 0){
+                realSelectedIndex = mSelectedIndex + 1;
+            }
+        }
+
+        mTabAdapter.setSelectedIndex(realSelectedIndex);
+        mTabAdapter.setPagerIndex(newIndex,nextOffset);
+        if (mSelectedIndex != realSelectedIndex) {
             mTabAdapter.notifyItemChanged(mSelectedIndex);
-            mTabAdapter.notifyItemChanged(newIndex);
+            mTabAdapter.notifyItemChanged(realSelectedIndex);
         } else {
-            if (nextOffset > 0.5f) {
-                mTabAdapter.setSelectedIndex(newIndex + 1, nextOffset);
-            } else {
-                mTabAdapter.setSelectedIndex(newIndex, nextOffset);
-            }
-
-            if (leftToright && nextOffset > 0.5f || !leftToright && nextOffset < 0.5f) {
-                mTabAdapter.notifyItemChanged(newIndex);
-                mTabAdapter.notifyItemChanged(newIndex + 1);
-            }
+            invalidate();
         }
-        invalidate();
-        mSelectedIndex = newIndex;
-    }
 
-    private void setOffset(float positionOffset) {
-        if (positionOffset - lastPositionOffset > 0) {//从左向右滑
-            leftToright = true;
-        } else {//从右向左滑
-            leftToright = false;
-        }
+        mSelectedIndex = realSelectedIndex;
     }
 
 }
