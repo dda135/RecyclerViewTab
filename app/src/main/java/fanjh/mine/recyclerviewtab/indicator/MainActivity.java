@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         return randomCount;
                     }
                 });
-                mRecyclerView.setSelectIndex(0,0);
+                mRecyclerView.setSelectIndex(0,0,true);
             }
         });
         mRecyclerView = (TabRecyclerView) findViewById(R.id.rv_tab);

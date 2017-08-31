@@ -9,6 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,9 @@ public class TabRecyclerView extends RecyclerView {
     private DefaultItemAnimator mItemAnimator;
     private boolean clickShouldSmooth;
     private boolean shouldAutoMiddle = true;//default scroll to middle
+    private float lastPositionOffset;
+    private boolean leftToright = false;
+    private boolean changeColor = false;
 
     public TabRecyclerView(Context context) {
         this(context, null);
@@ -55,7 +60,6 @@ public class TabRecyclerView extends RecyclerView {
 
     private void initSmoothScroller() {
         mLinearSmoothScroller = new LinearSmoothScroller(getContext()) {
-
             @Override
             public int calculateDtToFit(int viewStart, int viewEnd, int boxStart, int boxEnd, int snapPreference) {
                 return (boxStart + ((boxEnd - boxStart) >> 1)) - (viewStart + ((viewEnd - viewStart) >> 1));
@@ -69,7 +73,7 @@ public class TabRecyclerView extends RecyclerView {
     }
 
     private void initAnimator() {
-        mItemAnimator = new DefaultItemAnimator(){
+        mItemAnimator = new DefaultItemAnimator() {
             @Override
             public boolean animateMove(ViewHolder holder, int fromX, int fromY, int toX, int toY) {
                 return true;
@@ -120,7 +124,7 @@ public class TabRecyclerView extends RecyclerView {
     @Override
     public void addItemDecoration(ItemDecoration decor) {
         if (decor instanceof BaseTabDecoration) {
-            if(null == mTabDecorations){
+            if (null == mTabDecorations) {
                 mTabDecorations = new ArrayList<>();
             }
             mTabDecorations.add((BaseTabDecoration) decor);
@@ -132,7 +136,7 @@ public class TabRecyclerView extends RecyclerView {
 
     @Override
     public void removeItemDecoration(ItemDecoration decor) {
-        if(null != mTabDecorations){
+        if (null != mTabDecorations) {
             mTabDecorations.remove(decor);
         }
         super.removeItemDecoration(decor);
@@ -149,7 +153,7 @@ public class TabRecyclerView extends RecyclerView {
             mTabAdapter.addCallback(new BaseRecyclerTabAdapter.OnSelectedCallback() {
                 @Override
                 public void onSelected(int oldSelectedIndex, int position) {
-                    setSelectIndex(position, 0);
+                    setSelectIndex(position, 0, true);
                     if (null != mAssociatePager) {
                         mAssociatePager.setCurrentItem(position, clickShouldSmooth);
                     }
@@ -162,7 +166,7 @@ public class TabRecyclerView extends RecyclerView {
         throw new IllegalArgumentException("当前只能填充继承于BaseRecyclerTabAdapter的适配器");
     }
 
-    public void setViewPager(ViewPager mAssociatePager) {
+    public void setViewPager(final ViewPager mAssociatePager) {
         if (null == mAssociatePager) {
             throw new NullPointerException("关联的ViewPager可以为空？");
         }
@@ -170,7 +174,9 @@ public class TabRecyclerView extends RecyclerView {
         this.mAssociatePager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                setSelectIndex(position, positionOffset);
+                setOffset(positionOffset);
+                setSelectIndex(position, positionOffset, false);
+                lastPositionOffset = positionOffset;
             }
 
             @Override
@@ -179,18 +185,18 @@ public class TabRecyclerView extends RecyclerView {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                if(state == RecyclerView.SCROLL_STATE_IDLE) {
+                if (state == RecyclerView.SCROLL_STATE_IDLE) {
                     autoScroll();
                 }
             }
         });
     }
 
-    private void autoScroll(){
-        if(!shouldAutoMiddle){
+    private void autoScroll() {
+        if (!shouldAutoMiddle) {
             return;
         }
-        if(null == mDefaultLayoutManager.findViewByPosition(mSelectedIndex)){
+        if (null == mDefaultLayoutManager.findViewByPosition(mSelectedIndex)) {
             scrollToPosition(mSelectedIndex);
             postDelayed(new Runnable() {
                 @Override
@@ -198,29 +204,52 @@ public class TabRecyclerView extends RecyclerView {
                     mLinearSmoothScroller.setTargetPosition(mSelectedIndex);
                     mDefaultLayoutManager.startSmoothScroll(mLinearSmoothScroller);
                 }
-            },100);
-        }else {
+            }, 100);
+        } else {
             mLinearSmoothScroller.setTargetPosition(mSelectedIndex);
             mDefaultLayoutManager.startSmoothScroll(mLinearSmoothScroller);
         }
     }
 
-    public void setSelectIndex(int newIndex, float nextOffset) {
+    /**
+     * 选中某一项
+     * @param newIndex
+     * @param nextOffset
+     * @param withOutOffset 是否考虑viewpager滑动的时候，这个时候判断offset值为0.5的情况
+     */
+    public void setSelectIndex(int newIndex, float nextOffset, boolean withOutOffset) {
         if (null != mTabDecorations) {
-            for(BaseTabDecoration decoration:mTabDecorations){
-                decoration.setSelectIndex(newIndex,nextOffset);
+            for (BaseTabDecoration decoration : mTabDecorations) {
+                decoration.setSelectIndex(newIndex, nextOffset);
             }
         }
-        if (null != mTabAdapter) {
+
+        if (withOutOffset) {
             mTabAdapter.setSelectedIndex(newIndex, nextOffset);
-            if (newIndex != mSelectedIndex) {
-                mTabAdapter.notifyItemChanged(mSelectedIndex);
-                mTabAdapter.notifyItemChanged(newIndex);
+            mTabAdapter.notifyItemChanged(mSelectedIndex);
+            mTabAdapter.notifyItemChanged(newIndex);
+        } else {
+            if (nextOffset > 0.5f) {
+                mTabAdapter.setSelectedIndex(newIndex + 1, nextOffset);
             } else {
-                invalidate();
+                mTabAdapter.setSelectedIndex(newIndex, nextOffset);
+            }
+
+            if (leftToright && nextOffset > 0.5f || !leftToright && nextOffset < 0.5f) {
+                mTabAdapter.notifyItemChanged(newIndex);
+                mTabAdapter.notifyItemChanged(newIndex + 1);
             }
         }
+        invalidate();
         mSelectedIndex = newIndex;
+    }
+
+    private void setOffset(float positionOffset) {
+        if (positionOffset - lastPositionOffset > 0) {//从左向右滑
+            leftToright = true;
+        } else {//从右向左滑
+            leftToright = false;
+        }
     }
 
 }
