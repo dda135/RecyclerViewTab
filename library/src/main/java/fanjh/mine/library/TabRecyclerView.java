@@ -9,9 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +34,6 @@ public class TabRecyclerView extends RecyclerView {
     private boolean shouldAutoMiddle = true;//default scroll to middle
     private float lastPositionOffset;
     private boolean leftToright = false;
-    private boolean changeColor = false;
 
     public TabRecyclerView(Context context) {
         this(context, null);
@@ -213,6 +209,7 @@ public class TabRecyclerView extends RecyclerView {
 
     /**
      * 选中某一项
+     *
      * @param newIndex
      * @param nextOffset
      * @param withOutOffset 是否考虑viewpager滑动的时候，这个时候判断offset值为0.5的情况
@@ -225,23 +222,28 @@ public class TabRecyclerView extends RecyclerView {
         }
 
         if (withOutOffset) {
-            mTabAdapter.setSelectedIndex(newIndex, nextOffset);
-            mTabAdapter.notifyItemChanged(mSelectedIndex);
-            mTabAdapter.notifyItemChanged(newIndex);
-        } else {
-            if (nextOffset > 0.5f) {
-                mTabAdapter.setSelectedIndex(newIndex + 1, nextOffset);
-            } else {
+            if (newIndex != mSelectedIndex) {
                 mTabAdapter.setSelectedIndex(newIndex, nextOffset);
+                mTabAdapter.notifyItemChanged(mSelectedIndex);
+                mTabAdapter.notifyItemChanged(newIndex);
+            } else {
+                invalidate();
             }
-
+        } else {
+            mTabAdapter.setSelectedIndex(mSelectedIndex, nextOffset);
             if (leftToright && nextOffset > 0.5f || !leftToright && nextOffset < 0.5f) {
                 mTabAdapter.notifyItemChanged(newIndex);
                 mTabAdapter.notifyItemChanged(newIndex + 1);
+            } else {
+                invalidate();
             }
         }
-        invalidate();
-        mSelectedIndex = newIndex;
+
+        if (nextOffset > 0.5f) {
+            mSelectedIndex = newIndex + 1;
+        } else {
+            mSelectedIndex = newIndex;
+        }
     }
 
     private void setOffset(float positionOffset) {
