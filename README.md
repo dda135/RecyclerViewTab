@@ -1,0 +1,3 @@
+# RecyclerViewTab
+一个基于RecyclerView实现的Tab控件<br>
+好处的话主要是在Tab特别多的时候，利用视图复用机制相对会好一点
